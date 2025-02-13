@@ -13,6 +13,30 @@ namespace SQL_menetrend
 {
     public partial class Form1 : Form
     {
+        public readonly struct Fraction
+        {
+            private readonly int num;
+            private readonly int den;
+
+            public Fraction(bool v1, bool v2) : this()
+            {
+                V1 = v1;
+                V2 = v2;
+            }
+
+            public bool V1 { get; }
+            public bool V2 { get; }
+
+            public static Fraction operator <(Fraction a, Fraction b)
+            {
+                return new Fraction(a.num < b.num, a.den < b.den);
+            }
+
+            public static Fraction operator >(Fraction a, Fraction b)
+            {
+                return new Fraction(a.num > b.num, a.den > b.den);
+            }
+        }
         public Form1()
         {
             InitializeComponent();
@@ -36,6 +60,10 @@ namespace SQL_menetrend
                 return járat + " " + honnan + " " + hova + " " + indul.óra + ":" + indul.perc + " " + érkezik.óra + ":" + érkezik.perc; 
             }
         }
+
+
+        Dictionary<string, string> kikotő = new Dictionary<string, string>();
+
         private void Form1_Load(object sender, EventArgs e)
         {
             hajó hajok = new hajó();
@@ -43,6 +71,9 @@ namespace SQL_menetrend
 
             StreamReader olvas = new StreamReader("menetrendmod.txt");
 
+            // a e  n
+            //   L E A N
+            // 1 2 3 4 5
             string elso;
             string[] resz;
 
@@ -68,15 +99,54 @@ namespace SQL_menetrend
 
                 menetrend.Add(hajok);
 
-                for (int i = 0; i < menetrend.Count; i++)
-                {
-                    if (menetrend[i].járat == "J1")
-                    {
-                        label1.Text += "\n" + hajok.ToString();
-                    }
-                }
-                
             }
+            for (int i = 0; i < menetrend.Count; i++)
+            {
+                if (menetrend[i].járat == "J1")
+                {
+                    //label1.Text += "\n" + hajok.ToString();
+                }
+            }
+            //balatonfuredrol indulo hajojaratok 11:30 12:30
+            //List<string> beerkezokSzama = new List<string>();
+            Dictionary<string, int> beerkezokSzama = new Dictionary<string, int>();
+
+
+            for (int i = 0; i < menetrend.Count; i++)
+            {
+                if (!beerkezokSzama.Keys.Contains(menetrend[i].hova))
+                {
+                    beerkezokSzama.Add(menetrend[i].hova, 0);
+                }
+            }
+            label2.Text = "";
+            for (int i = 0; i < menetrend.Count; i++)
+            {
+                if (beerkezokSzama.ContainsKey(menetrend[i].hova))
+                {
+                    
+
+
+                }
+            }
+
+            for (int i = 0; i < beerkezokSzama.Count; i++)
+            {
+                //label2.Text += $"\n{beerkezokSzama[i][i]}";
+            }
+
+
+            for (int i = 0; i < menetrend.Count; i++)
+            {
+                if (menetrend[i].honnan == "Balatonfüred" && menetrend[i].indul.óra >= 11 && menetrend[i].indul.óra <= 12)
+                {
+                    label1.Text += "\n" + menetrend[i].honnan + " " + menetrend[i].hova  + " "+ menetrend[i].indul.óra + ":" + menetrend[i].indul.perc;
+                }
+            }
+
+            //string[] beerkezokSzama = new string[menetrend.Count];
+            
+
         }
     }
 }
